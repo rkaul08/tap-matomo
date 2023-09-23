@@ -1,0 +1,31 @@
+version: 1
+project_id: tap-matomo
+default_environment: dev
+environments:
+  - name: dev
+  - name: staging
+  - name: prod
+plugins:
+  extractors:
+    - name: tap-matomo
+      namespace: tap_matomo
+      pip_url: .
+      settings:
+        - name: api
+          kind: object
+      config:
+        api:
+          base_url: "https://example.com/"
+          module: "API"
+          method: "Live.getLastVisitsDetails"
+          idSite: "25"
+          period: "day"
+          date: "yesterday"
+          format: "JSON"
+          token_auth: "..changeme.."
+          filter_limit: 10000
+
+  loaders:
+    - name: target-jsonl
+      variant: andyh1203
+      pip_url: target-jsonl

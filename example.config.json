@@ -1,0 +1,13 @@
+{
+  "api": {
+    "base_url": "https://example.com/",
+    "module": "API",
+    "method": "Live.getLastVisitsDetails",
+    "idSite": "25",
+    "period": "day",
+    "date": "yesterday",
+    "format": "JSON",
+    "token_auth": "..changeme..",
+    "filter_limit": 10000
+  }
+}
