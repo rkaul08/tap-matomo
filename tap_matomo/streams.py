@@ -197,4 +197,5 @@ class VisitsDetailsStream(TapAnalyticsStream):
         records = response.json()
 
         for record in records:
+            print(record)
             yield record
