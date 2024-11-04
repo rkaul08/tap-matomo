@@ -195,6 +195,7 @@ class VisitsDetailsStream(TapAnalyticsStream):
         # Fetch the text (JSON) from the URL
         response = requests.get(url, timeout=10)
         records = response.json()
+        print(records)
 
         for record in records:
             yield record
