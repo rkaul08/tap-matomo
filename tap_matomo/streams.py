@@ -189,13 +189,12 @@ class VisitsDetailsStream(TapAnalyticsStream):
             "filter_limit": api_config["filter_limit"],
         }
 
-        # Construct the full URL
-        url = base_url + "?" + "&".join(f"{k}={v}" for k, v in parameters.items())
-
         # Fetch the text (JSON) from the URL
-        response = requests.get(url, timeout=10)
+        response = requests.post(
+            base_url,
+            data=parameters,
+            timeout=10)
         records = response.json()
-        print(records)
 
         for record in records:
             yield record
