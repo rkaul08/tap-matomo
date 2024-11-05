@@ -1,6 +1,7 @@
 """Stream class for tap-matomo."""
 
 from typing import Iterable
+import json
 
 import requests
 from singer_sdk import Stream, Tap
