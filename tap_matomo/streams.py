@@ -190,6 +190,10 @@ class VisitsDetailsStream(TapAnalyticsStream):
             "filter_limit": api_config["filter_limit"],
         }
 
+        if "filter_limit" in api_config:
+        post_data["filter_limit"] = api_config["filter_limit"]
+
+
         # Fetch the text (JSON) from the URL
         response = requests.post(
             base_url,
