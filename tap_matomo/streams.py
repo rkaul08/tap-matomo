@@ -191,7 +191,7 @@ class VisitsDetailsStream(TapAnalyticsStream):
         }
 
         if "filter_limit" in api_config:
-        post_data["filter_limit"] = api_config["filter_limit"]
+            post_data["filter_limit"] = api_config["filter_limit"]
 
 
         # Fetch the text (JSON) from the URL
