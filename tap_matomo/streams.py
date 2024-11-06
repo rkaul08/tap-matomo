@@ -186,11 +186,9 @@ class VisitsDetailsStream(TapAnalyticsStream):
             "period": api_config["period"],
             "date": api_config["date"],
             "format": api_config["format"],
-            "token_auth": api_config["token_auth"]
+            "token_auth": api_config["token_auth"],
+            "filter_limit" = api_config["filter_limit"]
         }
-
-        if "filter_limit" in api_config:
-            post_data["filter_limit"] = api_config["filter_limit"]
 
 
         # Fetch the text (JSON) from the URL
