@@ -37,11 +37,12 @@ class TapMatomo(Tap):
                 Property("date", StringType, required=True),
                 Property("format", StringType, required=True),
                 Property("token_auth", StringType, required=True),
-                Property("filter_limit", NumberType, default=10000),
+                Property("filter_limit", NumberType, required=False)
             ),
             required=True,
         ),
     ).to_dict()
+
 
     def discover_streams(self) -> List[Stream]:
         """Return a list of discovered streams."""
