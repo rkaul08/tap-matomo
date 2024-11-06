@@ -2,6 +2,7 @@
 
 from typing import Iterable
 import json
+from datetime import datetime
 
 import requests
 from singer_sdk import Stream, Tap
@@ -190,40 +191,83 @@ class VisitsDetailsStream(TapAnalyticsStream):
             "date": api_config["date"],
             "format": api_config["format"],
             "token_auth": api_config["token_auth"],
+            "filter_offset": 0, 
+            "filter_limit": 10000,
         }
 
-        if "filter_limit" in api_config:
-            parameters["filter_limit"] = api_config["filter_limit"]
-    
+        while True:
+            self.logger.info(f"Fetching records with offset: {parameters['filter_offset']}")
 
 
         # Fetch the text (JSON) from the URL
-        response = requests.post(
-            base_url,
-            data=parameters,
-            timeout=10)
-        records = response.json()
+            response = requests.post(
+                base_url,
+                data=parameters,
+                timeout=10)
+            records = response.json()
 
-        try:
-            for record in records:
-                formatted_record = {}
-                for key, value in record.items():
-                    # Skip the excluded fields
-                    if key in ['actionDetails', 'pluginsIcons', 'experiments']:
-                        formatted_record[key] = json.dumps(value) if value else None
-                    else:
+            response.raise_for_status()
+            records = response.json()
+
+            if not records:
+                break
+        
+
+            try:
+                for record in records:
+                    formatted_record = {}
+                    for key, value in record.items():
+                        # Skip the excluded fields
+                        if isinstance(value, (list, dict)):
+                            formatted_record[key] = json.dumps(value) if value else None
+                        else:
                 
-                        # Convert all other values to strings if they're not None
-                        formatted_record[key] = str(value) if value is not None else None
+                            # Convert all other values to strings if they're not None
+                            formatted_record[key] = str(value) if value is not None else None
             
-                yield formatted_record
+                    yield formatted_record
 
-        except requests.exceptions.RequestException as e:
-            self.logger.error(f"Request failed: {str(e)}")
-            raise
-        except ValueError as e:
-            self.logger.error(f"Failed to parse JSON response: {str(e)}")
-            raise
+                parameters['filter_offset'] += parameters['filter_limit']
+                
+                if len(records) < parameters['filter_limit']:
+                    break
+
+
+            except requests.exceptions.RequestException as e:
+                self.logger.error(f"Request failed: {str(e)}")
+                raise
+            except ValueError as e:
+                self.logger.error(f"Failed to parse JSON response: {str(e)}")
+                raise
+
+                    
+                    # # Handle nested structures like actionDetails
+                    # if isinstance(value, list):
+                    #     formatted_record[key] = [
+                    #         {str(k): str(v) if v is not None else None 
+                    #          for k, v in item.items()}
+                    #         for item in value
+                    #     ]
+                    # else:
+                        # Convert all values to strings if they're not None
+                        # formatted_record[key] = str(value) if value is not None else None
+            
+                # Ensure all property names are properly quoted
+                # yield json.loads(json.dumps(formatted_record))
+                # yield {
+                #     "type": "RECORD",
+                #     "stream": self.name,
+                #     "record": formatted_record,  # The actual data goes in the record field
+                #     "version": int(datetime.now().timestamp() * 1000),
+                #     "time_extracted": datetime.utcnow().isoformat() + "Z"
+                #     }
+
+        # except requests.exceptions.RequestException as e:
+        #     self.logger.error(f"Request failed: {str(e)}")
+        #     raise
+        # except ValueError as e:
+        #     self.logger.error(f"Failed to parse JSON response: {str(e)}")
+            # raise
         # for record in records:
         #     print(record)
         #     yield record
