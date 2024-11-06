@@ -208,19 +208,15 @@ class VisitsDetailsStream(TapAnalyticsStream):
             for record in records:
                 formatted_record = {}
                 for key, value in record.items():
-                    # Handle nested structures like actionDetails
-                    if isinstance(value, list):
-                        formatted_record[key] = [
-                            {str(k): str(v) if v is not None else None 
-                             for k, v in item.items()}
-                            for item in value
-                        ]
+                    # Skip the excluded fields
+                    if key in ['actionDetails', 'pluginsIcons', 'experiments']:
+                        formatted_record[key] = json.dumps(value) if value else None
                     else:
-                        # Convert all values to strings if they're not None
+                
+                        # Convert all other values to strings if they're not None
                         formatted_record[key] = str(value) if value is not None else None
             
-                # Ensure all property names are properly quoted
-                yield json.loads(json.dumps(formatted_record))
+                yield formatted_record
 
         except requests.exceptions.RequestException as e:
             self.logger.error(f"Request failed: {str(e)}")
