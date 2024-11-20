@@ -192,7 +192,7 @@ class VisitsDetailsStream(TapAnalyticsStream):
             "format": api_config["format"],
             "token_auth": api_config["token_auth"],
             "filter_offset": 0, 
-            "filter_limit": 10000,
+            "filter_limit": 5000,
         }
 
         while True:
