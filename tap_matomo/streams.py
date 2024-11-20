@@ -203,7 +203,7 @@ class VisitsDetailsStream(TapAnalyticsStream):
             response = requests.post(
                 base_url,
                 data=parameters,
-                timeout=200)
+                timeout=10)
             records = response.json()
 
             response.raise_for_status()
