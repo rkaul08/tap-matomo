@@ -197,7 +197,7 @@ class VisitsDetailsStream(TapAnalyticsStream):
 
         while True:
             self.logger.info(f"Fetching records with offset: {parameters['filter_offset']}")
-
+            self.logger.info(f"Sending request to {base_url} with parameters: {parameters}")
 
         # Fetch the text (JSON) from the URL
             response = requests.post(
