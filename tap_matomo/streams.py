@@ -205,9 +205,7 @@ class VisitsDetailsStream(TapAnalyticsStream):
                 data=parameters,
                 timeout=1200)
             records = response.json()
-
             response.raise_for_status()
-            records = response.json()
 
             if not records:
                 break
